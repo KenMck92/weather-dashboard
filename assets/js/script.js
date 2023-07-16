@@ -1,21 +1,11 @@
-// waits until the doc is loaded and ready to start the functions and variable assignments
+// variable assignments to be loaded for the start of the function including api key
 $(document).ready(function () {
     var myKey = 'eba282579b6e3e0a4f5619443760660f'
     var localStorageCurrent = localStorage.getItem('pastCities');
     var localCities = [];
     var localParsed = JSON.parse(localStorage.getItem('pastCities'));
     var currentDay = document.querySelector(".current");
-    //this simply appends li's to the ul dynamically based on how many there are saved so I dont have to repeat the code
-    function showHistory() {
-        if (localStorageCurrent) {
-            localParsed.forEach(function (i) {
-                var p = document.createElement('p');
-                p.innerText = i;
-                $('#history').append(p);
-            });
-        };
-    };
-    showHistory();
+
     // this function gets the data you searched and finds it on a geo locater api
     function fetchData(choice) {
         var geoURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + choice + "&limit=1&appid=" + myKey;
@@ -24,14 +14,12 @@ $(document).ready(function () {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            // then puts the found geolocation into the weather apis so they get results for that place
+            // then puts the found geolocation into the weather apis so they get results for that function
             var owmURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + data[0].lat + '&lon=' + data[0].lon + '&units=imperial&appid=' + myKey;
             var todayWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + data[0].lat + '&lon=' + data[0].lon + '&units=imperial&appid=' + myKey;
             fetch(owmURL).then(function (response) {
                 return response.json();
             }).then(function (data) {
-
-                // sets the text of all the attributes below to their corresponding date and time set by the algorithm derived by me
                 
                 $('.5dayFork').each(function (i) {
                     $(this).find('.date').text(data.list[i * 8 + 4].dt_txt.split(' ')[0]);
@@ -43,23 +31,35 @@ $(document).ready(function () {
             });
             fetch(todayWeather).then(function (response) {
                 return response.json();
-                // finally sets the same attributes to the today section
+                
             }).then(function (data) {
                 console.log(data)
-                var weatherIcon = data.weather.icon
-                var img = createElement('img');
-                img.setAttribute("src","https://openweathermap.org/img/wn/" + weatherIcon);
                 $(currentDay).each(function (i) {
-                    $(this).find('.date').text(data.name + ' (' + dayjs().format('MM/DD/YYYY') + ')');
+                    $(this).find('.date').text(data.name + ' (' + dayjs().format('MM/DD/YYYY') +  ')');
                     $(this).find('.condition').attr('src', '#');
                     $(this).find('.temp').text('Temperature: ' + data.main.temp + ', Feels like: ' + data.main.feels_like);
                     $(this).find('.wind').text('Wind speed: ' + data.wind.speed);
                     $(this).find('.humid').text('Humidity: ' + + data.main.humidity);
+                    // var weatherIcon = data.weather.icon
+                    // var img = createElement('img');
+                    // img.setAttribute("src","https://openweathermap.org/img/wn/" + weatherIcon);
+                    
                 });
             });
         });
     };
-    //when the button is clicked, we want to save the input, erase the textbox, and store it in localstorage if it follows our rules.
+    //created a h2 to display the history data on the site
+    function showHistory() {
+        if (localStorageCurrent) {
+            localParsed.forEach(function (i) {
+                var h2 = document.createElement('h2');
+                h2.innerText = i;
+                $('#history').append(h2);
+            });
+        };
+    };
+    showHistory();
+    //when the button is clicked, we want to save the input, erase the text box, and store it in local storage if it follows our rules.
     $('button').on('click', function (event) {
         event.preventDefault();
         var input = $('#username').val().replaceAll(" ", "")
@@ -73,13 +73,12 @@ $(document).ready(function () {
                 localStorage.setItem('pastCities', JSON.stringify(localCities))
             };
         };
-        //then we show the history and display the data for what you have chosen
         
         $('#history').val('');
         fetchData(input);
     });
-    // when you click an option on the history list it will run the function that displays the weather with your value
-    $('li').on('click', function () {
+    // be able to click a city in the history to go back to the city
+    $('h2').on('click', function () {
         var choice = $(this).text()
         fetchData(choice)
     })
