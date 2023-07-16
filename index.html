@@ -13,16 +13,10 @@
     <title>Weather Dashboard</title>
 </head>
 
-<!-- 2-3 rows are needed. one for the current day forecast, one for a 5day header and one for the 5 day weather -->
-<!-- 5 cards for 5 day weather -->
-<!-- search input with button -->
-<!-- user search list -->
-<!-- list coming from local storage and appending it to the screen -->
-
 <body>
     <header class="text-center border border-warning bg-warning bg-gradient text-white fs-1 text fw-bolder ">Weather
         Dashboard</header>
-
+<!-- Created search button with and text box to enter city to check current weather -->
     <main class="row justify-space-between">
         <section class="col-12 col-md-4">
             <div class="card">
@@ -34,12 +28,14 @@
                     <button type="submit" class="btn border border-warning bg-warning">Search</button>
                 </form>
             </div>
+            <!-- history box to display previous cities searched -->
             <div id="history" class="card text-center">
                 <h3 class="card-header text-uppercase text-black bg-warning bg-opacity-75">History</h3>
                 <ul id="history" class="card-body">   
                 </ul>
             </div>
         </section>
+        <!-- Created cards to display the weather for current day and next 5 days -->
         <section class="col-12 col-md-8">
             <div class="current card">
                 <div class="card-body bg-warning">

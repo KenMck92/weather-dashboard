@@ -1,6 +1,6 @@
 // variable assignments to be loaded for the start of the function including api key
 $(document).ready(function () {
-    var myKey = 'eba282579b6e3e0a4f5619443760660f'
+    var key = 'eba282579b6e3e0a4f5619443760660f'
     var localStorageCurrent = localStorage.getItem('pastCities');
     var localCities = [];
     var localParsed = JSON.parse(localStorage.getItem('pastCities'));
@@ -8,16 +8,16 @@ $(document).ready(function () {
 
     // this function gets the data you searched and finds it on a geo locater api
     function fetchData(choice) {
-        var geoURL = "https://api.openweathermap.org/geo/1.0/direct?q=" + choice + "&limit=1&appid=" + myKey;
-        fetch(geoURL, {
+        var url = "https://api.openweathermap.org/geo/1.0/direct?q=" + choice + "&limit=1&appid=" + key;
+        fetch(url, {
             cache: 'reload',
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
             // then puts the found geolocation into the weather apis so they get results for that function
-            var owmURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + data[0].lat + '&lon=' + data[0].lon + '&units=imperial&appid=' + myKey;
-            var todayWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + data[0].lat + '&lon=' + data[0].lon + '&units=imperial&appid=' + myKey;
-            fetch(owmURL).then(function (response) {
+            var weatherURL = 'https://api.openweathermap.org/data/2.5/forecast?lat=' + data[0].lat + '&lon=' + data[0].lon + '&units=imperial&appid=' + key;
+            var currentWeather = 'https://api.openweathermap.org/data/2.5/weather?lat=' + data[0].lat + '&lon=' + data[0].lon + '&units=imperial&appid=' + key;
+            fetch(weatherURL).then(function (response) {
                 return response.json();
             }).then(function (data) {
                 
@@ -29,7 +29,7 @@ $(document).ready(function () {
                     $(this).find('.humid').text('Humidity: ' + data.list[i * 8 + 4].main.humidity + '%');
                 });
             });
-            fetch(todayWeather).then(function (response) {
+            fetch(currentWeather).then(function (response) {
                 return response.json();
                 
             }).then(function (data) {
